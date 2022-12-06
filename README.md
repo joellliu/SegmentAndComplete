@@ -25,7 +25,7 @@ mkdir evaluation
 conda activate sac
 bash eval_coco.sh ${GPU_ID} ${PATCH_SIZE}
 ```
-For example, to run the evaluation on gpu 0 with 50x50 patches, the last command should be:
+For example, to run the evaluation on gpu 0 with 100x100 patches, the last command should be:
 ```commandline
 bash eval_coco.sh 0 100
 ```
