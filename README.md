@@ -40,7 +40,7 @@ import torch
 SAC_processor = PatchDetector(3, 1, base_filter=16, square_sizes=[125, 100, 75, 50, 25], n_patch=1)
 SAC_processor.unet.load_state_dict(torch.load("ckpts/coco_at.pth", map_location='cpu'))
 
-# x: list [] of input images of shape 3xHxW
+# x: list [] of input images of shape 3xHxW with values normalized to [0, 1]
 x_processed, _, _ = SAC_processor(x, bpda=True, shape_completion=True)
 ```
 
