@@ -44,6 +44,7 @@ SAC_processor.unet.load_state_dict(torch.load("ckpts/coco_at.pth", map_location=
 x_processed, _, _ = SAC_processor(x, bpda=True, shape_completion=True)
 ```
 
+You can find a demo of SAC [here](https://colab.research.google.com/drive/1TdNxkbUUa4ldjJTgPn6LPcmRgF8bWoBo?usp=sharing).
 
 ## APRICOT-Mask dataset
 We present the APRICOT-Mask dataset, which
