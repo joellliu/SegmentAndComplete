@@ -1,16 +1,12 @@
 import torch
-from armory.data import datasets
 from torch.utils.data import Dataset, DataLoader
-from torchvision import transforms, utils
 from skimage import io, transform
 import random
 import numpy as np
-import pdb
 import transforms as T
 import glob
 import os
 from torchvision.transforms import functional as F
-import pdb
 
 
 def get_transform(train):
@@ -214,159 +210,6 @@ class COCODataset(Dataset):
                 mask = np.zeros([image.shape[1], image.shape[2]])
                 mask[ymin:ymax, xmin:xmax] = 1
                 mask = torch.from_numpy(mask).unsqueeze(0)
-        return image, mask
-
-
-class XViewDatasetATE2E(Dataset):
-    def __init__(self, data_dir, patch_size=100, eval=False, output_size=None):
-        """
-        Args:
-            csv_file (string): Path to the csv file with annotations.
-            root_dir (string): Directory with all the images.
-            transform (callable, optional): Optional transform to be applied
-                on a sample.
-        """
-        self.files = glob.glob(os.path.join(data_dir, "*.pt"))
-        self.patch_size = patch_size
-        self.eval = eval
-        self.output_size = output_size
-
-    def __len__(self):
-        return len(self.files)
-
-    def __getitem__(self, idx):
-        file = self.files[idx]
-        data = torch.load(file)
-        x = data['x']
-        y = data['y']
-
-        image = F.to_tensor(x[0])
-        # print(image.shape)
-        if self.output_size:
-            image = F.resize(image, [self.output_size, self.output_size])
-        mask = np.zeros([image.shape[1], image.shape[2]])
-        mask = torch.from_numpy(mask)
-        mask = mask.unsqueeze(0)
-
-        if self.eval:
-            xmin = data['xmin']
-            ymin = data['ymin']
-        else:
-            h = x.shape[1]
-            w = x.shape[2]
-            xmin = np.random.randint(0, h - self.patch_size)
-            ymin = np.random.randint(0, w - self.patch_size)
-
-        xmax = xmin + self.patch_size
-        ymax = ymin + self.patch_size
-
-        mask_adv = np.zeros([image.shape[1], image.shape[2]])
-        mask_adv[ymin:ymax, xmin:xmax] = 1
-        mask_adv = torch.from_numpy(mask_adv)
-        mask_adv = mask_adv.unsqueeze(0)
-
-        return image, mask, mask_adv, xmin, ymin, y
-
-
-class XViewDatasetAT(Dataset):
-    def __init__(self, data_dir, output_size=None, patch_size=100):
-        """
-        Args:
-            csv_file (string): Path to the csv file with annotations.
-            root_dir (string): Directory with all the images.
-            transform (callable, optional): Optional transform to be applied
-                on a sample.
-        """
-        self.files = glob.glob(os.path.join(data_dir, "*.pt"))
-        self.output_size = output_size
-        self.patch_size = patch_size
-
-    def __len__(self):
-        return len(self.files)
-
-    def __getitem__(self, idx):
-        file = self.files[idx]
-        data = torch.load(file)
-        x = data['x']
-
-        image = F.to_tensor(x[0])
-        if self.output_size:
-            image = F.resize(image, [self.output_size, self.output_size])
-        mask = np.zeros([image.shape[1], image.shape[2]])
-        mask = torch.from_numpy(mask)
-        mask = mask.unsqueeze(0)
-
-        h = x.shape[1]
-        w = x.shape[2]
-        xmin = np.random.randint(0, h - self.patch_size)
-        ymin = np.random.randint(0, w - self.patch_size)
-
-        xmax = xmin + self.patch_size
-        ymax = ymin + self.patch_size
-
-        if self.output_size:
-            scale = self.output_size / float(h)
-            xmin = int(np.floor(xmin*scale))
-            xmax = int(np.ceil(xmax*scale))
-            ymin = int(np.floor(ymin*scale))
-            ymax = int(np.ceil(ymax*scale))
-
-        mask_adv = np.zeros([image.shape[1], image.shape[2]])
-        mask_adv[ymin:ymax, xmin:xmax] = 1
-        mask_adv = torch.from_numpy(mask_adv)
-        mask_adv = mask_adv.unsqueeze(0)
-
-        return image, mask, mask_adv, xmin, ymin
-
-
-
-class XViewDataset(Dataset):
-    def __init__(self, data_dir, p_clean=0.3, output_size=500, patch_size=100):
-        """
-        Args:
-            csv_file (string): Path to the csv file with annotations.
-            root_dir (string): Directory with all the images.
-            transform (callable, optional): Optional transform to be applied
-                on a sample.
-        """
-        self.files = glob.glob(os.path.join(data_dir, "*.pt"))
-        self.output_size = output_size
-        self.patch_size = patch_size
-        self.p_clean = p_clean
-
-    def __len__(self):
-        return len(self.files)
-
-    def __getitem__(self, idx):
-        file = self.files[idx]
-        data = torch.load(file)
-        x, x_adv, xmin, ymin = data['x'], data['x_adv'], data['xmin'], data['ymin']
-        if np.random.uniform() < self.p_clean:
-            image = F.to_tensor(x[0])
-            image = F.resize(image, [self.output_size, self.output_size])
-            mask = np.zeros([self.output_size, self.output_size])
-            mask = torch.from_numpy(mask)
-            mask = mask.unsqueeze(0)
-        else:
-            h = x_adv.shape[1]
-            w = x_adv.shape[2]
-            scale_h = self.output_size / float(h)
-            scale_w = self.output_size / float(w)
-            xmax = xmin + self.patch_size
-            ymax = ymin + self.patch_size
-
-            xmin = int(np.floor(xmin*scale_w))
-            xmax = int(np.ceil(xmax*scale_w))
-            ymin = int(np.floor(ymin*scale_h))
-            ymax = int(np.ceil(ymax*scale_h))
-
-            mask = np.zeros([self.output_size, self.output_size])
-            mask[ymin:ymax, xmin:xmax] = 1
-            mask = torch.from_numpy(mask)
-            mask = mask.unsqueeze(0)
-
-            image = F.to_tensor(x_adv[0])
-            image = F.resize(image, [self.output_size, self.output_size])
         return image, mask
 
 
