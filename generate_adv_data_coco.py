@@ -81,7 +81,7 @@ else:
 
 dataset = torch.utils.data.Subset(dataset, list(range(start_ind, end_ind)))
 data_loader = torch.utils.data.DataLoader(dataset, batch_size=1)
-for x, y in enumerate(tqdm(data_loader)):
+for x, y in tqdm(data_loader):
     import pdb
     pdb.set_trace()
     x = x[0].numpy()
