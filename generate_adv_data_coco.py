@@ -52,7 +52,7 @@ art_model = PyTorchFasterRCNN(
             "loss_rpn_box_reg",
         ),
         device_type=DEVICE,
-        adaptive=args.adaptive,
+        adaptive=False,
         defense=False,
         bpda=False,
         shape_completion=False,
