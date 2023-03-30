@@ -2,3 +2,5 @@ evaluation
 __pycache__
 .idea
 .DS_Store
+data
+adv_data

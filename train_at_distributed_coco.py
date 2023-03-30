@@ -18,8 +18,7 @@ import torch.distributed as dist
 from advertorch.context import ctx_noparamgrad_and_eval
 import torch.multiprocessing as mp
 
-#dir_data = "../FasterRCNN_adv_dataset/adv_dataset_random_patch_100/data/"
-dir_data = "../FasterRCNN_coco/adv_dataset_faster_rcnn_random_True_patch_100_use_label_True/data/"
+dir_data = "adv_data/coco_topleft_patch_100/data/"
 
 
 def mask_pgd_attack(net, x_natural, mask, gpu, criterion=nn.BCEWithLogitsLoss(), eps=1.0, max_iter=200, eps_step=0.01,

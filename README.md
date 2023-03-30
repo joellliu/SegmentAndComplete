@@ -50,7 +50,7 @@ You can find a demo of SAC [here](https://colab.research.google.com/drive/1TdNxk
 ### Training Pipeline
 1. pre-generate adversarial images
 ```shell
-python generate_adv_data_coco.py 
+python generate_adv_data_coco.py --random
 ```
 2. Train the patch segmenter on the pre-generated adv dataset
 ```shell

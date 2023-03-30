@@ -27,9 +27,9 @@ os.environ["CUDA_VISIBLE_DEVICES"] = args.device
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # setup dir
 if args.random:
-    save_dir = f'adv_dataset/coco_random_patch_{args.patch_size}'
+    save_dir = f'adv_data/coco_random_patch_{args.patch_size}'
 else:
-    save_dir = f'adv_dataset/coco_topleft_patch_{args.patch_size}'
+    save_dir = f'adv_data/coco_topleft_patch_{args.patch_size}'
 data_dir = os.path.join(save_dir, 'data')
 img_dir = os.path.join(save_dir, 'image')
 os.makedirs(data_dir, exist_ok=True)
@@ -81,10 +81,11 @@ else:
 
 dataset = torch.utils.data.Subset(dataset, list(range(start_ind, end_ind)))
 data_loader = torch.utils.data.DataLoader(dataset, batch_size=1)
-for x, y in tqdm(data_loader):
-    import pdb
-    pdb.set_trace()
+pbar = tqdm(data_loader)
+for i, data in enumerate(pbar):
+    x, y = data
     x = x[0].unsqueeze(0).permute(0, 2, 3, 1).numpy()
+    label = {k: v.squeeze(0).numpy() for k, v in y.items()}
     patch_height = args.patch_size
     patch_width = args.patch_size
     if args.random:
@@ -95,7 +96,7 @@ for x, y in tqdm(data_loader):
     else:
         xmin = 0
         ymin = 0
-    x_adv = attacker.generate(x, patch_height=patch_height, patch_width=patch_width, xmin=xmin, ymin=ymin)
+    x_adv = attacker.generate(x, y=label, patch_height=patch_height, patch_width=patch_width, xmin=xmin, ymin=ymin)
 
     # save adv img
     img_fn = os.path.join(img_dir, f'{i:06d}.png')

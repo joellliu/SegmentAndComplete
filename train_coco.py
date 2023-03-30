@@ -163,7 +163,7 @@ def get_args():
     parser.add_argument('-f', '--load', dest='load', type=str, default=False,
                         help='Load model from a .pth file')
     parser.add_argument('-d', '--device', dest='device', default='0', type=str, help='GPU to use.')
-    parser.add_argument('--data_path', type=str, default="../FasterRCNN_coco/adv_dataset_faster_rcnn_random_True_patch_100_use_label_True/data/")
+    parser.add_argument('--data_path', type=str, default="adv_data/coco_topleft_patch_100/data/")
     parser.add_argument('-dir', '--dir', dest='dir', default='runs/0504/', type=str, help='dir for saving files')
     parser.add_argument('-s', '--image_size', dest='image_size', type=int, default=500,
                         help='Image size for training')
