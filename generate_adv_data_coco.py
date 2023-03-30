@@ -84,7 +84,7 @@ data_loader = torch.utils.data.DataLoader(dataset, batch_size=1)
 for x, y in tqdm(data_loader):
     import pdb
     pdb.set_trace()
-    x = x[0].numpy()
+    x = x[0].unsqueeze(0).permute(0, 2, 3, 1).numpy()
     patch_height = args.patch_size
     patch_width = args.patch_size
     if args.random:
