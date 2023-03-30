@@ -67,7 +67,7 @@ attacker = PGDPatch(art_model, batch_size=1, eps=1.0, eps_step=0.01, max_iter=20
 
 # setup dataset
 coco_train = CocoDetection(root = "./data/train2017", annFile = "./data/annotations/instances_train2017.json")
-dataset_size = min(args.n_images, len(coco_train))
+dataset_size = min(args.n_imgs, len(coco_train))
 
 
 chunk_size = dataset_size // args.world_size
