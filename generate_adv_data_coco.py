@@ -1,6 +1,5 @@
 from attack.pgd_patch import PGDPatch
 from armory import paths
-from armory.data import datasets
 from vision.torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn
 from pytorch_faster_rcnn import PyTorchFasterRCNN
 from torchvision.datasets import CocoDetection
@@ -77,10 +76,12 @@ if args.rank == args.world_size - 1:
 else:
     end_ind = (args.rank + 1) * chunk_size
 
-
-pbar = tqdm(range(start_ind, end_ind))
-for i in pbar:
-    x, y = coco_train[i]
+coco_train = torch.utils.data.Subset(coco_train, list(range(start_ind, end_ind)))
+data_loader = torch.utils.data.DataLoader(coco_train, batch_size=1)
+for x, y in enumerate(tqdm(data_loader)):
+    import pdb
+    pdb.set_trace()
+    x = x.numpy()
     patch_height = args.patch_size
     patch_width = args.patch_size
     if args.random:
