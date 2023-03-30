@@ -4,6 +4,8 @@ from vision.torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_
 from pytorch_faster_rcnn import PyTorchFasterRCNN
 from torchvision.datasets import CocoDetection
 from tqdm import tqdm
+from coco_utils import get_coco
+import presets
 import torch
 import numpy as np
 import cv2
@@ -65,8 +67,9 @@ attacker = PGDPatch(art_model, batch_size=1, eps=1.0, eps_step=0.01, max_iter=20
                     targeted=False, verbose=True)
 
 # setup dataset
-coco_train = CocoDetection(root = "./data/train2017", annFile = "./data/annotations/instances_train2017.json")
-dataset_size = min(args.n_imgs, len(coco_train))
+dataset = get_coco("./data/", image_set="train", transforms=presets.DetectionPresetEval())
+
+dataset_size = min(args.n_imgs, len(dataset))
 
 
 chunk_size = dataset_size // args.world_size
@@ -76,12 +79,12 @@ if args.rank == args.world_size - 1:
 else:
     end_ind = (args.rank + 1) * chunk_size
 
-coco_train = torch.utils.data.Subset(coco_train, list(range(start_ind, end_ind)))
-data_loader = torch.utils.data.DataLoader(coco_train, batch_size=1)
+dataset = torch.utils.data.Subset(dataset, list(range(start_ind, end_ind)))
+data_loader = torch.utils.data.DataLoader(dataset, batch_size=1)
 for x, y in enumerate(tqdm(data_loader)):
     import pdb
     pdb.set_trace()
-    x = x.numpy()
+    x = x[0].numpy()
     patch_height = args.patch_size
     patch_width = args.patch_size
     if args.random:
