@@ -91,8 +91,8 @@ for i, data in enumerate(pbar):
     if args.random:
         h = x.shape[1]
         w = x.shape[2]
-        xmin = np.random.randint(0, h - patch_height)
-        ymin = np.random.randint(0, w - patch_width)
+        ymin = np.random.randint(0, h - patch_height)
+        xmin = np.random.randint(0, w - patch_width)
     else:
         xmin = 0
         ymin = 0
