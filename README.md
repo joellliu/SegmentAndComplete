@@ -77,7 +77,8 @@ The dataset can be downloaded by the following command:
 ```commandline
 wget -r ftp://ftp.cis.jhu.edu/pub/apricot-mask
 ```
-
+## Model checkpoints
+We provide the checkpoints for segmenters for [COCO](ckpts/coco_at.pth) and [Apricot Mask](https://drive.google.com/file/d/1yl_ZcrNFme_yP22UgynvG0fHtuy8XmcZ/view?usp=share_link). For Apricot Mask, we use 64 initial filters and downsample the image to half of the original resolution. 
 
 ## Citation
 
